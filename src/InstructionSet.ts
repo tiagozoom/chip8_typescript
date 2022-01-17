@@ -47,25 +47,25 @@ class InstructionSet implements InstructionSetPort {
   };
 
   inst_0x8(opcode: Opcode) {
-    if (opcode.n === 0) this.cpu.V[opcode.x] += this.cpu.V[opcode.y];
+    if (opcode.n === 0) this.cpu.V[opcode.x] = this.cpu.V[opcode.y];
     else if (opcode.n === 1) this.cpu.V[opcode.x] |= this.cpu.V[opcode.y];
     else if (opcode.n === 2) this.cpu.V[opcode.x] &= this.cpu.V[opcode.y];
     else if (opcode.n === 3) this.cpu.V[opcode.x] ^= this.cpu.V[opcode.y];
     else if (opcode.n === 4) {
       const sum = this.cpu.V[opcode.x] + this.cpu.V[opcode.y];
-      this.cpu.V[0xf] = sum > 255 ? 1 : 0;
+      this.cpu.V[0xF] = sum > 255 ? 1 : 0;
       this.cpu.V[opcode.x] = sum & 0x00ff;
     } else if (opcode.n === 5) {
-      this.cpu.V[0xf] = this.cpu.V[opcode.x] > this.cpu.V[opcode.y] ? 1 : 0;
+      this.cpu.V[0xF] = this.cpu.V[opcode.x] > this.cpu.V[opcode.y] ? 1 : 0;
       this.cpu.V[opcode.x] -= this.cpu.V[opcode.y];
     } else if (opcode.n === 6) {
-      this.cpu.V[0xf] = this.cpu.V[opcode.x] & 0x0001 ? 1 : 0;
+      this.cpu.V[0xF] = this.cpu.V[opcode.x] & 0x0001 ? 1 : 0;
       this.cpu.V[opcode.x] /= 2;
     } else if (opcode.n === 7) {
-      this.cpu.V[0xf] = this.cpu.V[opcode.y] > this.cpu.V[opcode.x] ? 1 : 0;
+      this.cpu.V[0xF] = this.cpu.V[opcode.y] > this.cpu.V[opcode.x] ? 1 : 0;
       this.cpu.V[opcode.x] = this.cpu.V[opcode.y] - this.cpu.V[opcode.x];
-    } else if (opcode.n === 0xe) {
-      this.cpu.V[0xf] = (this.cpu.V[opcode.x] >> 4) & 0x001 ? 1 : 0;
+    } else if (opcode.n === 0xE) {
+      this.cpu.V[0xF] = this.cpu.V[opcode.x] >> 15 ? 1 : 0;
       this.cpu.V[opcode.x] *= 2;
     }
   };
