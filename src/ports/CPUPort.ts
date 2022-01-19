@@ -1,5 +1,5 @@
-import { Opcode } from "../shared";
-import { InputPort, OutputPort } from ".";
+import { Opcode, SpritePositionTable } from "../shared";
+import { InputPort, OutputPort, SpriteHandlerPort } from ".";
 import InstructionSetPort from "./InstructionSetPort";
 
 interface CPUPort {
@@ -17,8 +17,11 @@ interface CPUPort {
   width: number;
   height: number;
   instructions: InstructionSetPort;
+  spritePositions: SpritePositionTable;
+  spritesHandler: SpriteHandlerPort;
   execute: (opcode: Opcode) => void;
   clearDisplay: () => void;
+  initializeSprites: () => SpritePositionTable;
 }
 
-export default CPUPort
+export default CPUPort;

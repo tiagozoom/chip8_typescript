@@ -7,4 +7,5 @@ type Opcode = {
   kk: number;
 };
 
-export default Opcode
+export default Opcode;
+
