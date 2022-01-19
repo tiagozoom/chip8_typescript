@@ -875,5 +875,121 @@ describe("#InstructionSet test suite", () => {
 
       expect(cpuMock.I[0]).toEqual(0x10);
     });
+
+    it("Fx33 - Store BCD representation of Vx in memory locations I, I+1, and I+2.", async () => {
+      const opcodeMock: Opcode = {
+        address: 0,
+        n: 0,
+        nnn: 0x200,
+        x: 0,
+        y: 0,
+        kk: 0x33,
+      };
+
+      cpuMock.I[0] = 0x200;
+      cpuMock.V[0] = 56124;
+
+      instructionSet.inst_0xF(opcodeMock);
+
+      expect(cpuMock.memory[0x200]).toEqual(1);
+      expect(cpuMock.memory[0x201]).toEqual(2);
+      expect(cpuMock.memory[0x202]).toEqual(4);
+    });
+
+    it("Fx55 - Store BCD representation of Vx in memory locations I, I+1, and I+2.", async () => {
+      const opcodeMock: Opcode = {
+        address: 0,
+        n: 0,
+        nnn: 0x200,
+        x: 0,
+        y: 0,
+        kk: 0x55,
+      };
+
+      cpuMock.V[0x0] = 1;
+      cpuMock.V[0x1] = 2;
+      cpuMock.V[0x2] = 3;
+      cpuMock.V[0x3] = 4;
+      cpuMock.V[0x4] = 4;
+      cpuMock.V[0x5] = 6;
+      cpuMock.V[0x6] = 6;
+      cpuMock.V[0x7] = 7;
+      cpuMock.V[0x8] = 8;
+      cpuMock.V[0x9] = 9;
+      cpuMock.V[0xa] = 0xa;
+      cpuMock.V[0xb] = 0xb;
+      cpuMock.V[0xc] = 0xc;
+      cpuMock.V[0xd] = 0xd;
+      cpuMock.V[0xe] = 0xe;
+      cpuMock.V[0xf] = 0xf;
+      cpuMock.I[0x0] = 0;
+
+      instructionSet.inst_0xF(opcodeMock);
+
+      expect(cpuMock.memory[0x0]).toEqual(1);
+      expect(cpuMock.memory[0x1]).toEqual(2);
+      expect(cpuMock.memory[0x2]).toEqual(3);
+      expect(cpuMock.memory[0x3]).toEqual(4);
+      expect(cpuMock.memory[0x4]).toEqual(4);
+      expect(cpuMock.memory[0x5]).toEqual(6);
+      expect(cpuMock.memory[0x6]).toEqual(6);
+      expect(cpuMock.memory[0x7]).toEqual(7);
+      expect(cpuMock.memory[0x8]).toEqual(8);
+      expect(cpuMock.memory[0x9]).toEqual(9);
+      expect(cpuMock.memory[0xa]).toEqual(0xa);
+      expect(cpuMock.memory[0xb]).toEqual(0xb);
+      expect(cpuMock.memory[0xc]).toEqual(0xc);
+      expect(cpuMock.memory[0xd]).toEqual(0xd);
+      expect(cpuMock.memory[0xe]).toEqual(0xe);
+      expect(cpuMock.memory[0xf]).toEqual(0xf);
+    });
+
+    it("Fx65 - Store BCD representation of Vx in memory locations I, I+1, and I+2.", async () => {
+      const opcodeMock: Opcode = {
+        address: 0,
+        n: 0,
+        nnn: 0x200,
+        x: 0,
+        y: 0,
+        kk: 0x65,
+      };
+
+      cpuMock.memory[0x0] = 1;
+      cpuMock.memory[0x1] = 2;
+      cpuMock.memory[0x2] = 3;
+      cpuMock.memory[0x3] = 4;
+      cpuMock.memory[0x4] = 4;
+      cpuMock.memory[0x5] = 6;
+      cpuMock.memory[0x6] = 6;
+      cpuMock.memory[0x7] = 7;
+      cpuMock.memory[0x8] = 8;
+      cpuMock.memory[0x9] = 9;
+      cpuMock.memory[0xa] = 0xa;
+      cpuMock.memory[0xb] = 0xb;
+      cpuMock.memory[0xc] = 0xc;
+      cpuMock.memory[0xd] = 0xd;
+      cpuMock.memory[0xe] = 0xe;
+      cpuMock.memory[0xf] = 0xf;
+      cpuMock.I[0x0] = 0;
+
+      instructionSet.inst_0xF(opcodeMock);
+
+      expect(cpuMock.V[0x0]).toEqual(1);
+      expect(cpuMock.V[0x1]).toEqual(2);
+      expect(cpuMock.V[0x2]).toEqual(3);
+      expect(cpuMock.V[0x3]).toEqual(4);
+      expect(cpuMock.V[0x4]).toEqual(4);
+      expect(cpuMock.V[0x5]).toEqual(6);
+      expect(cpuMock.V[0x6]).toEqual(6);
+      expect(cpuMock.V[0x7]).toEqual(7);
+      expect(cpuMock.V[0x8]).toEqual(8);
+      expect(cpuMock.V[0x9]).toEqual(9);
+      expect(cpuMock.V[0xa]).toEqual(0xa);
+      expect(cpuMock.V[0xb]).toEqual(0xb);
+      expect(cpuMock.V[0xc]).toEqual(0xc);
+      expect(cpuMock.V[0xd]).toEqual(0xd);
+      expect(cpuMock.V[0xe]).toEqual(0xe);
+      expect(cpuMock.V[0xf]).toEqual(0xf);
+    });
   });
 });

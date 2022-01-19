@@ -113,6 +113,20 @@ class InstructionSet implements InstructionSetPort {
     else if (opcode.kk === 0x29) {
       this.cpu.I[0] = this.cpu.spritePositions[opcode.x];
     } else if (opcode.kk === 0x33) {
+      const number = this.cpu.V[opcode.x];
+      const numbers = number.toString().split("");
+      const stack = [...numbers];
+      for (let i = 2; i >= 0; i--) {
+        this.cpu.memory[this.cpu.I[0] + i] = Number(stack.pop() || 0);
+      }
+    } else if (opcode.kk === 0x55) {
+      for (let i = 0; i < 0x10; i++) {
+        this.cpu.memory[this.cpu.I[0] + i] = this.cpu.V[i];
+      }
+    } else if (opcode.kk === 0x65) {
+      for (let i = 0; i < 0x10; i++) {
+        this.cpu.V[i] = this.cpu.memory[this.cpu.I[0] + i];
+      }
     }
   }
 }
