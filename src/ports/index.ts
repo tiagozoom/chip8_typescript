@@ -3,6 +3,7 @@ import OutputPort from "./OutputPort";
 import InstructionSetPort from "./InstructionSetPort";
 import CPUPort from "./CPUPort";
 import SpriteHandlerPort from "./SpriteHandlerPort";
+import MediaLayerPort from "./MediaLayerPort";
 
 export {
   InputPort,
@@ -10,4 +11,5 @@ export {
   InstructionSetPort,
   CPUPort,
   SpriteHandlerPort,
+  MediaLayerPort,
 };

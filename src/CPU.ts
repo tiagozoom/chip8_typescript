@@ -65,6 +65,18 @@ class CPU implements CPUPort {
     };
   }
 
+  convertToOpcode(byte: number): Opcode {
+    const opcode: Opcode = {
+      address: byte >> 12,
+      nnn: byte & 0x0fff,
+      n: byte & 0x000f,
+      x: (byte >> 8) & 0x0f,
+      y: (byte >> 4) & 0x00f,
+      kk: byte & 0x00ff,
+    };
+    return opcode;
+  }
+
   initializeSprites(): SpritePositionTable {
     const spritesTable = this.spritesHandler.getSpriteTable();
     const spritePositions: SpritePositionTable = {};
@@ -79,7 +91,15 @@ class CPU implements CPUPort {
     return spritePositions;
   }
 
-  clearDisplay() {}
+  clearDisplay() {
+    let offset = 0;
+    for (let i = 0; i < this.width; i++) {
+      for (let j = 0; j < this.height; j++) {
+        this.displayMemory[offset] = 0;
+      }
+    }
+  }
+
   execute(opcode: Opcode) {
     this.instructionTable[opcode.address](opcode);
     this.PC[0] += 2;

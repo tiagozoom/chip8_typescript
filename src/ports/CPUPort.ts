@@ -22,6 +22,7 @@ interface CPUPort {
   execute: (opcode: Opcode) => void;
   clearDisplay: () => void;
   initializeSprites: () => SpritePositionTable;
+  convertToOpcode: (byte: number) => Opcode;
 }
 
 export default CPUPort;
