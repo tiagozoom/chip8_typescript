@@ -1,3 +1,4 @@
+import { readFileSync } from "fs";
 import InstructionSet from "./InstructionSet";
 import {
   CPUPort,
@@ -46,23 +47,30 @@ class CPU implements CPUPort {
     this.spritesHandler = spritesHandler;
     this.spritePositions = this.initializeSprites();
     this.instructionTable = {
-      0x0: this.instructions.inst_0x0,
-      0x1: this.instructions.inst_0x1,
-      0x2: this.instructions.inst_0x2,
-      0x3: this.instructions.inst_0x3,
-      0x4: this.instructions.inst_0x4,
-      0x5: this.instructions.inst_0x5,
-      0x6: this.instructions.inst_0x6,
-      0x7: this.instructions.inst_0x7,
-      0x8: this.instructions.inst_0x8,
-      0x9: this.instructions.inst_0x9,
-      0xa: this.instructions.inst_0xA,
-      0xb: this.instructions.inst_0xB,
-      0xc: this.instructions.inst_0xC,
-      0xd: this.instructions.inst_0xD,
-      0xe: this.instructions.inst_0xE,
-      0xf: this.instructions.inst_0xF,
+      0x0: this.instructions.inst_0x0.bind(this.instructions),
+      0x1: this.instructions.inst_0x1.bind(this.instructions),
+      0x2: this.instructions.inst_0x2.bind(this.instructions),
+      0x3: this.instructions.inst_0x3.bind(this.instructions),
+      0x4: this.instructions.inst_0x4.bind(this.instructions),
+      0x5: this.instructions.inst_0x5.bind(this.instructions),
+      0x6: this.instructions.inst_0x6.bind(this.instructions),
+      0x7: this.instructions.inst_0x7.bind(this.instructions),
+      0x8: this.instructions.inst_0x8.bind(this.instructions),
+      0x9: this.instructions.inst_0x9.bind(this.instructions),
+      0xa: this.instructions.inst_0xA.bind(this.instructions),
+      0xb: this.instructions.inst_0xB.bind(this.instructions),
+      0xc: this.instructions.inst_0xC.bind(this.instructions),
+      0xd: this.instructions.inst_0xD.bind(this.instructions),
+      0xe: this.instructions.inst_0xE.bind(this.instructions),
+      0xf: this.instructions.inst_0xF.bind(this.instructions),
     };
+  }
+
+  readCartridge(path: string) {
+    const buffer = readFileSync(path);
+    for (let i = 0; i < buffer.length; i++) {
+      this.memory[0x200 + i] = buffer[i];
+    }
   }
 
   convertToOpcode(byte: number): Opcode {
@@ -95,7 +103,7 @@ class CPU implements CPUPort {
     let offset = 0;
     for (let i = 0; i < this.width; i++) {
       for (let j = 0; j < this.height; j++) {
-        this.displayMemory[offset] = 0;
+        this.displayMemory[offset++] = 0;
       }
     }
   }
@@ -103,6 +111,10 @@ class CPU implements CPUPort {
   execute(opcode: Opcode) {
     this.instructionTable[opcode.address](opcode);
     this.PC[0] += 2;
+  }
+
+  readNextInstruction(): number {
+    return (this.memory[this.PC[0]] << 8) + this.memory[this.PC[0] + 1];
   }
 }
 

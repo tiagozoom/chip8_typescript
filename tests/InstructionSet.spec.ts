@@ -44,6 +44,9 @@ class CPUMock implements CPUPort {
   spritesHandler: SpriteHandlerPort;
   clearDisplay() {}
   initialize() {}
+  convertToOpcode(byte: number): Opcode {
+    return null;
+  }
   initializeSprites(): SpritePositionTable {
     return {};
   }
