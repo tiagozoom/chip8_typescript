@@ -7,8 +7,8 @@ class MediaLayerMock implements MediaLayerPort {
     this.render = jest.fn();
     this.isDestroyed = jest.fn();
   }
-  createWindow(title: string, borderless: boolean): void {}
-  render(mode: string, buffer: Buffer): void {}
+  createWindow(title: string, borderless: boolean): void { }
+  render(mode: string, buffer: Buffer): void { }
   isDestroyed(): boolean {
     return false;
   }
@@ -23,9 +23,11 @@ describe("MediaLayer test suite", () => {
     output = new Output(mediaLayer, 64 * 10 * 32 * 10 * 4);
   });
 
-  describe("", () => {
+  describe("Displaying data on a 640 * 320 screen", () => {
     it("write - white display", async () => {
-      const buffer: Buffer = Buffer.alloc(64 * 32, 255);
+      const buffer: Buffer = Buffer.alloc(64 * 32, 0);
+
+      buffer[0] = 255
       output.write(buffer);
 
       let offset = 0;
@@ -33,6 +35,104 @@ describe("MediaLayer test suite", () => {
       expect(output.buffer[offset++]).toEqual(255);
       expect(output.buffer[offset++]).toEqual(255);
       expect(output.buffer[offset++]).toEqual(255);
+
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+      expect(output.buffer[offset++]).toEqual(255);
+
+
+      offset = 0;
+
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
+      expect(output.buffer[offset++ + 2560]).toEqual(255);
     });
   });
 });

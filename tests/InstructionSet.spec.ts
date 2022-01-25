@@ -15,7 +15,13 @@ class InputMock implements InputPort {
 }
 
 class OutputMock implements OutputPort {
-  write(data: Buffer) {}
+  buffer: Buffer;
+  constructor() {
+    this.buffer = Buffer.alloc(0)
+  }
+  createWindow(title: string, border: boolean) { };
+  windowExists() { return true };
+  write(data: Buffer) { }
 }
 
 class SpritesHandlerMock implements SpriteHandlerPort {
@@ -39,13 +45,13 @@ class CPUMock implements CPUPort {
   width: number;
   height: number;
   instructions: InstructionSetPort;
-  execute(opcode: Opcode) {}
+  execute(opcode: Opcode) { }
   spritePositions: SpritePositionTable;
   spritesHandler: SpriteHandlerPort;
-  clearDisplay() {}
-  initialize() {}
+  clearDisplay() { }
+  initialize() { }
   convertToOpcode(byte: number): Opcode {
-    return null;
+    return {} as Opcode;
   }
   initializeSprites(): SpritePositionTable {
     return {};
@@ -66,6 +72,8 @@ class CPUMock implements CPUPort {
     this.spritePositions = { 0x0: 0x10 };
     this.spritesHandler = new SpritesHandlerMock();
   }
+  readCartridge(path: string) { };
+  readNextInstruction() { return 1 };
 }
 
 describe("#InstructionSet test suite", () => {
@@ -811,7 +819,7 @@ describe("#InstructionSet test suite", () => {
       expect(cpuMock.V[0]).toEqual(10);
     });
 
-    it("Fx0A - Wait for a key press, store the value of the key in Vx.", async () => {});
+    it("Fx0A - Wait for a key press, store the value of the key in Vx.", async () => { });
     it("Fx15 - Set delay timer = Vx.", async () => {
       const opcodeMock: Opcode = {
         address: 0,

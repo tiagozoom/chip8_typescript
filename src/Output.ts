@@ -18,11 +18,14 @@ class Output implements OutputPort {
   }
 
   write(data: Buffer) {
-    let offset = 0;
-
     for (let i = 0; i < data.length; i++) {
       const bit = data[i] ? 255 : 0;
+      const x = i % 64;
+      const y = Math.floor(i / 64) * 32 * 10;
+      let start = y * 2560 + (x * 10 * 4);
+
       for (let j = 0; j < 10; j++) {
+        let offset = start + (j * 2560);
         for (let k = 0; k < 10; k++) {
           this.buffer[offset++] = bit;
           this.buffer[offset++] = bit;
