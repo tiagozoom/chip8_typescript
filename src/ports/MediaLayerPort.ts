@@ -1,12 +1,8 @@
+import { Resolution } from "../shared";
+
 export type Window = {
   destroyed: boolean;
-  render: (
-    width: number,
-    height: number,
-    stride: number,
-    format: string,
-    data: Buffer
-  ) => void;
+  render: (resolution: Resolution, format: string, data: Buffer) => void;
 };
 
 interface MediaLayerPort {

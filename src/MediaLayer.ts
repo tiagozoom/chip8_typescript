@@ -1,29 +1,26 @@
 import sdl from "@kmamal/sdl";
 import { MediaLayerPort } from "./ports";
+import { Resolution } from "./shared";
 
 class MediaLayer implements MediaLayerPort {
   private window: any;
-  private width: number;
-  private height: number;
-  private stride: number;
+  private resolution: Resolution;
 
-  constructor(width: number, height: number, stride: number) {
-    this.width = width;
-    this.height = height;
-    this.stride = stride;
+  constructor(resolution: Resolution) {
+    this.resolution = resolution;
   }
 
   createWindow(title: string, borderless: boolean) {
     this.window = sdl.video.createWindow({
       title,
-      width: this.width,
-      height: this.height,
+      width: this.resolution.width,
+      height: this.resolution.height,
       borderless,
     });
   }
 
   render(mode: string, buffer: Buffer) {
-    this.window.render(this.width, this.height, this.stride, mode, buffer);
+    this.window.render(this.resolution.width, this.resolution.height, this.resolution.stride, mode, buffer);
   }
 
   isDestroyed(): boolean {

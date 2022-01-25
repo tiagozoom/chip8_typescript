@@ -5,6 +5,7 @@ import Output from "./Output";
 import SpritesHandler from "./SpritesHandler";
 import { CPUPort, InputPort, MediaLayerPort, OutputPort } from "./ports";
 import MediaLayer from "./MediaLayer";
+import { Resolution } from "./shared";
 
 const WIDTH = 0x40;
 const HEIGHT = 0x20;
@@ -15,12 +16,11 @@ class Chip8 {
   input: InputPort;
 
   constructor(cartridge: string) {
-    const width = 64 * 10;
-    const height = 32 * 10;
-    const stride = width * 4;
-    const mediaLayer: MediaLayerPort = new MediaLayer(width, height, stride);
+    const originalResolution = { width: 64, height: 32, stride: 1 } as Resolution
+    const resolution = { width: 64 * 10, height: 32 * 10, stride: 4 } as Resolution
+    const mediaLayer: MediaLayerPort = new MediaLayer(resolution);
     this.input = new Input();
-    this.output = new Output(mediaLayer, width * height * stride);
+    this.output = new Output(mediaLayer, resolution, originalResolution);
     const sprintesHandler = new SpritesHandler();
     this.cpu = new CPU(WIDTH, HEIGHT, this.input, this.output, sprintesHandler);
     this.cpu.readCartridge(cartridge);

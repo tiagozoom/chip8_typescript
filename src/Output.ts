@@ -1,12 +1,17 @@
 import { OutputPort, MediaLayerPort } from "./ports";
+import { Resolution } from "./shared";
 
 class Output implements OutputPort {
   mediaLayer: MediaLayerPort;
   buffer: Buffer;
+  resolution: Resolution;
+  originalResolution: Resolution;
 
-  constructor(mediaLayer: MediaLayerPort, size: number) {
-    this.buffer = Buffer.alloc(size);
+  constructor(mediaLayer: MediaLayerPort, resolution: Resolution, originalResolution: Resolution) {
     this.mediaLayer = mediaLayer;
+    this.resolution = resolution;
+    this.originalResolution = originalResolution;
+    this.buffer = Buffer.alloc(resolution.width * resolution.height * resolution.stride);
   }
 
   windowExists() {
@@ -18,19 +23,22 @@ class Output implements OutputPort {
   }
 
   write(data: Buffer) {
+    const wDiff = this.resolution.width / this.originalResolution.width;
+    const hDiff = this.resolution.height / this.originalResolution.height;
+
     for (let i = 0; i < data.length; i++) {
       const bit = data[i] ? 255 : 0;
-      const x = i % 64;
-      const y = Math.floor(i / 64) * 32 * 10;
-      let start = y * 2560 + (x * 10 * 4);
 
-      for (let j = 0; j < 10; j++) {
-        let offset = start + (j * 2560);
-        for (let k = 0; k < 10; k++) {
-          this.buffer[offset++] = bit;
-          this.buffer[offset++] = bit;
-          this.buffer[offset++] = bit;
-          this.buffer[offset++] = bit;
+      const x = (i % this.originalResolution.width) * wDiff * this.resolution.stride;
+      const y = Math.floor(i / this.originalResolution.width) * this.originalResolution.height;
+      let start = (y * this.resolution.width * this.resolution.stride) + x;
+
+      console.log(start)
+
+      for (let j = 0; j < wDiff; j++) {
+        let offset = start + (j * this.resolution.width * this.resolution.stride);
+        for (let k = 0; k < hDiff; k++) {
+          for (let f = 0; f < this.resolution.stride; f++) this.buffer[offset++] = bit;
         }
       }
     }
