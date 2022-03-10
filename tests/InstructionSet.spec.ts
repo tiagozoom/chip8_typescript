@@ -1,12 +1,6 @@
 import InstructionSet from "../src/InstructionSet";
-import {
-  CPUPort,
-  InputPort,
-  InstructionSetPort,
-  OutputPort,
-  SpriteHandlerPort,
-} from "../src/ports";
-import { Opcode, SpritePositionTable } from "../src/shared";
+import { CPUPort, InputPort, InstructionSetPort, OutputPort, SpriteHandlerPort } from "../src/ports";
+import { Opcode, Resolution, SpritePositionTable } from "../src/shared";
 
 class InputMock implements InputPort {
   read() {
@@ -16,17 +10,46 @@ class InputMock implements InputPort {
 
 class OutputMock implements OutputPort {
   buffer: Buffer;
+  resolution: Resolution;
+  originalResolution: Resolution;
   constructor() {
-    this.buffer = Buffer.alloc(0)
+    this.buffer = Buffer.alloc(0);
+    this.resolution = {} as Resolution;
+    this.originalResolution = {} as Resolution;
   }
-  createWindow(title: string, border: boolean) { };
-  windowExists() { return true };
-  write(data: Buffer) { }
+  createWindow(title: string, border: boolean) {}
+  windowExists() {
+    return true;
+  }
+  write(data: Buffer) {}
 }
 
 class SpritesHandlerMock implements SpriteHandlerPort {
-  getSpriteTable(): number[][] {
-    return [[0xf0, 0x90, 0x90, 0x90, 0xf0]];
+  spritePositions: SpritePositionTable;
+  buffer: Uint8Array;
+
+  private spritesTable = [
+    [0xf0, 0x90, 0x90, 0x90, 0xf0],
+    [0x20, 0x60, 0x20, 0x20, 0x70],
+    [0xf0, 0x10, 0xf0, 0x80, 0xf0],
+    [0xf0, 0x10, 0xf0, 0x10, 0xf0],
+    [0x90, 0x90, 0xf0, 0x10, 0x10],
+    [0xf0, 0x80, 0xf0, 0x10, 0xf0],
+    [0xf0, 0x80, 0xf0, 0x90, 0xf0],
+    [0xf0, 0x10, 0x20, 0x40, 0x40],
+    [0xf0, 0x90, 0xf0, 0x90, 0xf0],
+    [0xf0, 0x90, 0xf0, 0x10, 0xf0],
+    [0xf0, 0x90, 0xf0, 0x90, 0x90],
+    [0xe0, 0x90, 0xe0, 0x90, 0xe0],
+    [0xf0, 0x80, 0x80, 0x80, 0xf0],
+    [0xe0, 0x90, 0x90, 0x90, 0xe0],
+    [0xf0, 0x80, 0xf0, 0x80, 0xf0],
+    [0xf0, 0x80, 0xf0, 0x80, 0x80],
+  ];
+
+  constructor() {
+    this.spritePositions = { 0x0: 0 };
+    this.buffer = Buffer.alloc(5, ...[0xf0, 0x90, 0x90, 0x90, 0xf0]);
   }
 }
 
@@ -45,16 +68,12 @@ class CPUMock implements CPUPort {
   width: number;
   height: number;
   instructions: InstructionSetPort;
-  execute(opcode: Opcode) { }
-  spritePositions: SpritePositionTable;
+  execute(opcode: Opcode) {}
   spritesHandler: SpriteHandlerPort;
-  clearDisplay() { }
-  initialize() { }
+  clearDisplay() {}
+  initialize() {}
   convertToOpcode(byte: number): Opcode {
     return {} as Opcode;
-  }
-  initializeSprites(): SpritePositionTable {
-    return {};
   }
 
   constructor() {
@@ -62,18 +81,19 @@ class CPUMock implements CPUPort {
     this.output = new OutputMock();
     this.height = 64;
     this.width = 32;
+    this.spritesHandler = new SpritesHandlerMock();
     this.displayMemory = Buffer.alloc(this.width * this.height, 0);
-    this.memory = Buffer.alloc(0x600, 0);
+    this.memory = new Uint8Array(this.spritesHandler.buffer, 0, 0x600);
+    console.log("testerino", this.memory);
     this.PC[0] = 0;
     this.instructions = new InstructionSet(this);
     this.execute = jest.fn();
     this.clearDisplay = jest.fn();
-    this.initializeSprites = jest.fn();
-    this.spritePositions = { 0x0: 0x10 };
-    this.spritesHandler = new SpritesHandlerMock();
   }
-  readCartridge(path: string) { };
-  readNextInstruction() { return 1 };
+  readCartridge(path: string) {}
+  readNextInstruction() {
+    return 1;
+  }
 }
 
 describe("#InstructionSet test suite", () => {
@@ -819,7 +839,7 @@ describe("#InstructionSet test suite", () => {
       expect(cpuMock.V[0]).toEqual(10);
     });
 
-    it("Fx0A - Wait for a key press, store the value of the key in Vx.", async () => { });
+    it("Fx0A - Wait for a key press, store the value of the key in Vx.", async () => {});
     it("Fx15 - Set delay timer = Vx.", async () => {
       const opcodeMock: Opcode = {
         address: 0,
@@ -884,7 +904,12 @@ describe("#InstructionSet test suite", () => {
 
       instructionSet.inst_0xF(opcodeMock);
 
-      expect(cpuMock.I[0]).toEqual(0x10);
+      expect(cpuMock.I[0]).toEqual(0);
+      expect(cpuMock.memory[cpuMock.I[0]]).toEqual(0xf0);
+      expect(cpuMock.memory[cpuMock.I[0] + 1]).toEqual(0x90);
+      expect(cpuMock.memory[cpuMock.I[0] + 2]).toEqual(0x90);
+      expect(cpuMock.memory[cpuMock.I[0] + 3]).toEqual(0x90);
+      expect(cpuMock.memory[cpuMock.I[0] + 4]).toEqual(0xf0);
     });
 
     it("Fx33 - Store BCD representation of Vx in memory locations I, I+1, and I+2.", async () => {
@@ -912,7 +937,7 @@ describe("#InstructionSet test suite", () => {
         address: 0,
         n: 0,
         nnn: 0x200,
-        x: 0,
+        x: 3,
         y: 0,
         kk: 0x55,
       };
@@ -920,39 +945,13 @@ describe("#InstructionSet test suite", () => {
       cpuMock.V[0x0] = 1;
       cpuMock.V[0x1] = 2;
       cpuMock.V[0x2] = 3;
-      cpuMock.V[0x3] = 4;
-      cpuMock.V[0x4] = 4;
-      cpuMock.V[0x5] = 6;
-      cpuMock.V[0x6] = 6;
-      cpuMock.V[0x7] = 7;
-      cpuMock.V[0x8] = 8;
-      cpuMock.V[0x9] = 9;
-      cpuMock.V[0xa] = 0xa;
-      cpuMock.V[0xb] = 0xb;
-      cpuMock.V[0xc] = 0xc;
-      cpuMock.V[0xd] = 0xd;
-      cpuMock.V[0xe] = 0xe;
-      cpuMock.V[0xf] = 0xf;
-      cpuMock.I[0x0] = 0;
 
       instructionSet.inst_0xF(opcodeMock);
 
       expect(cpuMock.memory[0x0]).toEqual(1);
       expect(cpuMock.memory[0x1]).toEqual(2);
       expect(cpuMock.memory[0x2]).toEqual(3);
-      expect(cpuMock.memory[0x3]).toEqual(4);
-      expect(cpuMock.memory[0x4]).toEqual(4);
-      expect(cpuMock.memory[0x5]).toEqual(6);
-      expect(cpuMock.memory[0x6]).toEqual(6);
-      expect(cpuMock.memory[0x7]).toEqual(7);
-      expect(cpuMock.memory[0x8]).toEqual(8);
-      expect(cpuMock.memory[0x9]).toEqual(9);
-      expect(cpuMock.memory[0xa]).toEqual(0xa);
-      expect(cpuMock.memory[0xb]).toEqual(0xb);
-      expect(cpuMock.memory[0xc]).toEqual(0xc);
-      expect(cpuMock.memory[0xd]).toEqual(0xd);
-      expect(cpuMock.memory[0xe]).toEqual(0xe);
-      expect(cpuMock.memory[0xf]).toEqual(0xf);
+      expect(cpuMock.memory[0x3]).toEqual(0);
     });
 
     it("Fx65 - Store BCD representation of Vx in memory locations I, I+1, and I+2.", async () => {
@@ -960,7 +959,7 @@ describe("#InstructionSet test suite", () => {
         address: 0,
         n: 0,
         nnn: 0x200,
-        x: 0,
+        x: 16,
         y: 0,
         kk: 0x65,
       };

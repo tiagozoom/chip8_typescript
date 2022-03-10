@@ -1,13 +1,7 @@
 import { readFileSync } from "fs";
 import InstructionSet from "./InstructionSet";
-import {
-  CPUPort,
-  InputPort,
-  InstructionSetPort,
-  OutputPort,
-  SpriteHandlerPort,
-} from "./ports";
-import { Opcode, SpritePositionTable } from "./shared";
+import { CPUPort, InputPort, InstructionSetPort, OutputPort, SpriteHandlerPort } from "./ports";
+import { Opcode } from "./shared";
 import InstructionObject from "./shared/types/InstructionObject";
 
 class CPU implements CPUPort {
@@ -26,26 +20,18 @@ class CPU implements CPUPort {
   output: OutputPort;
   instructions: InstructionSetPort;
   instructionTable: InstructionObject;
-  spritePositions: { [key: number]: number };
   spritesHandler: SpriteHandlerPort;
 
-  constructor(
-    width: number,
-    height: number,
-    input: InputPort,
-    output: OutputPort,
-    spritesHandler: SpriteHandlerPort
-  ) {
+  constructor(width: number, height: number, input: InputPort, output: OutputPort, spritesHandler: SpriteHandlerPort) {
     this.input = input;
     this.output = output;
     this.height = height;
     this.width = width;
     this.displayMemory = Buffer.alloc(width * height, 0);
-    this.memory = Buffer.alloc(0x600, 0);
+    this.spritesHandler = spritesHandler;
+    this.memory = new Uint8Array([...this.spritesHandler.buffer]);
     this.PC[0] = 0;
     this.instructions = new InstructionSet(this);
-    this.spritesHandler = spritesHandler;
-    this.spritePositions = this.initializeSprites();
     this.instructionTable = {
       0x0: this.instructions.inst_0x0.bind(this.instructions),
       0x1: this.instructions.inst_0x1.bind(this.instructions),
@@ -83,20 +69,6 @@ class CPU implements CPUPort {
       kk: byte & 0x00ff,
     };
     return opcode;
-  }
-
-  initializeSprites(): SpritePositionTable {
-    const spritesTable = this.spritesHandler.getSpriteTable();
-    const spritePositions: SpritePositionTable = {};
-    let offset = 0;
-    for (let i = 0; i < spritesTable.length; i++) {
-      spritePositions[i] = offset;
-      for (let j = 0; j < spritesTable[i].length; j++) {
-        this.memory[offset++] = spritesTable[i][j];
-      }
-    }
-
-    return spritePositions;
   }
 
   clearDisplay() {

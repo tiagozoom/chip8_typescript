@@ -1,6 +1,10 @@
 import { SpriteHandlerPort } from "./ports";
+import { SpritePositionTable } from "./shared";
 
 class SpriteHandler implements SpriteHandlerPort {
+  spritePositions: SpritePositionTable;
+  buffer: Uint8Array;
+
   private spritesTable = [
     [0xf0, 0x90, 0x90, 0x90, 0xf0],
     [0x20, 0x60, 0x20, 0x20, 0x70],
@@ -20,8 +24,17 @@ class SpriteHandler implements SpriteHandlerPort {
     [0xf0, 0x80, 0xf0, 0x80, 0x80],
   ];
 
-  getSpriteTable(): number[][] {
-    return this.spritesTable;
+  constructor() {
+    const size = this.spritesTable.length * this.spritesTable[0].length;
+    this.spritePositions = {};
+    this.buffer = new Uint8Array(size);
+    let offset = 0;
+    for (let i = 0; i < this.spritesTable.length; i++) {
+      this.spritePositions[i] = offset;
+      for (let j = 0; j < this.spritesTable[i].length; j++) {
+        this.buffer[offset++] = this.spritesTable[i][j];
+      }
+    }
   }
 }
 

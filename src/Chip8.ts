@@ -16,8 +16,9 @@ class Chip8 {
   input: InputPort;
 
   constructor(cartridge: string) {
-    const originalResolution = { width: 64, height: 32, stride: 1 } as Resolution
-    const resolution = { width: 64 * 10, height: 32 * 10, stride: 4 } as Resolution
+    const originalResolution = { width: WIDTH, height: HEIGHT, stride: 1 } as Resolution;
+    const resolution = { width: WIDTH * 10, height: HEIGHT * 10, stride: 4 } as Resolution;
+
     const mediaLayer: MediaLayerPort = new MediaLayer(resolution);
     this.input = new Input();
     this.output = new Output(mediaLayer, resolution, originalResolution);
@@ -39,6 +40,6 @@ class Chip8 {
   }
 }
 
-const chip8 = new Chip8("./test.ch8");
+const chip8 = new Chip8("./test_opcode.ch8");
 
 chip8.mainLoop();

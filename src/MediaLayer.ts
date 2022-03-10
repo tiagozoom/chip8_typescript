@@ -20,7 +20,7 @@ class MediaLayer implements MediaLayerPort {
   }
 
   render(mode: string, buffer: Buffer) {
-    this.window.render(this.resolution.width, this.resolution.height, this.resolution.stride, mode, buffer);
+    this.window.render(this.resolution.width, this.resolution.height, this.resolution.width * this.resolution.stride, mode, buffer);
   }
 
   isDestroyed(): boolean {

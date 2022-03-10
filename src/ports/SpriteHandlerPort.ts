@@ -1,5 +1,8 @@
+import { SpritePositionTable } from "../shared";
+
 interface SpriteHandlerPort {
-  getSpriteTable: () => number[][];
+  spritePositions: SpritePositionTable;
+  buffer: Uint8Array;
 }
 
 export default SpriteHandlerPort;

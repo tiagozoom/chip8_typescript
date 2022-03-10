@@ -30,13 +30,11 @@ class Output implements OutputPort {
       const bit = data[i] ? 255 : 0;
 
       const x = (i % this.originalResolution.width) * wDiff * this.resolution.stride;
-      const y = Math.floor(i / this.originalResolution.width) * this.originalResolution.height;
-      let start = (y * this.resolution.width * this.resolution.stride) + x;
-
-      console.log(start)
+      const y = Math.floor(i / this.originalResolution.width) * hDiff;
+      let start = y * this.resolution.width * this.resolution.stride + x;
 
       for (let j = 0; j < wDiff; j++) {
-        let offset = start + (j * this.resolution.width * this.resolution.stride);
+        let offset = start + j * this.resolution.width * this.resolution.stride;
         for (let k = 0; k < hDiff; k++) {
           for (let f = 0; f < this.resolution.stride; f++) this.buffer[offset++] = bit;
         }
